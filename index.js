@@ -41,18 +41,31 @@ async function eSocial() {
       console.log("akjon user je ke", result);
       res.send(result);
     });
+
     app.get("/users", async (req, res) => {
       const query = {};
       const result = await userCollection.find(query).toArray();
       res.send(result);
     });
 
-    // app.put('/users/:id', async(req, res)=>{
-    //   const id = req.params.id;
-    //   const filter = {_id:ObjectId(id)}
-    //     const updateUser = req.body;
+    app.put("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const updateUser = req.body;
+      const option = {upsert:true}
+      const updatedoc={
+        $set:{
+        displayName:updateUser.displayName,
+        photoURL:updateUser.photoURL,
+        email:updateUser.email,
+         name:'rajib'
+        }
+      }
+      const result = await userCollection.updateOne(filter, updatedoc, option)
 
-    // })
+      console.log(updatedoc);
+      res.send(result)
+    });
     app.post("/comment", async (req, res) => {
       const commentData = req.body;
       const result = await commentCollection.insertOne(commentData);
